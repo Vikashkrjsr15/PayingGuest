@@ -1,13 +1,29 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { Menu, X } from "lucide-react"; // install lucide-react if not already
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 100); // change threshold as needed
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md"
+          : "bg-gradient-to-r from-black/50 via-gray-600/60 to-black/50"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center text-white">
         <h1 className="text-2xl font-bold tracking-wide">PG Finder</h1>
 
         {/* Desktop Nav Links */}
@@ -30,7 +46,7 @@ function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden px-4 pb-4 space-y-3 text-lg">
+        <div className="md:hidden px-4 pb-4 space-y-3 text-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600">
           <Link to="/" onClick={() => setIsOpen(false)} className="block hover:text-yellow-300">Home</Link>
           <a href="#about" onClick={() => setIsOpen(false)} className="block hover:text-yellow-300">About</a>
           <Link to="/contact" onClick={() => setIsOpen(false)} className="block hover:text-yellow-300">Contact</Link>
